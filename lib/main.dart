@@ -1,11 +1,13 @@
+import "package:bloc/bloc.dart";
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/authentication/authentication.bloc.dart';
-import 'package:flutter_app/bloc/authentication/authentication.event.dart';
-import 'package:flutter_app/bloc/authentication/authentication.state.dart';
-import 'package:flutter_app/bloc/delegates/simpleBloc.delegate.dart';
+import 'package:flutter_app/pages/home.page.dart';
+import 'package:flutter_app/pages/login/login.page.dart';
+import 'package:flutter_app/pages/splash.page.dart';
 import 'package:flutter_app/repositories/user-repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import "package:bloc/bloc.dart";
+
+import 'core/authentication/bloc.dart';
+import 'core/delegates/simpleBloc.delegate.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
   final UserRepository _userRepository;
 
   MyApp({Key key, @required UserRepository userRepository})
-      : assert(_userRepository != null),
+      : assert(userRepository != null),
         _userRepository = userRepository,
         super(key: key);
 
@@ -34,6 +36,20 @@ class MyApp extends StatelessWidget {
       ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
+          if (state is Uninitialized) {
+            return SplashPage();
+          }
+          if (state is Unauthenticated) {
+            return LoginPage(
+              userRepository: _userRepository,
+            );
+          }
+          if (state is Authenticated) {
+            return HomePage(
+              name: state.displayName,
+            );
+          }
+
           return Placeholder();
         },
       ),

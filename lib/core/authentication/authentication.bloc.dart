@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_app/bloc/authentication/authentication.event.dart';
-import 'package:flutter_app/bloc/authentication/authentication.state.dart';
+import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:flutter_app/core/authentication/bloc.dart';
 import 'package:flutter_app/repositories/user-repository.dart';
+import 'package:meta/meta.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
@@ -17,17 +17,18 @@ class AuthenticationBloc
 
   @override
   Stream<AuthenticationState> mapEventToState(
-      AuthenticationEvent event) async* {
+    AuthenticationEvent event,
+  ) async* {
     if (event is AppStarted) {
-      yield* _mapAppStartedState();
+      yield* _mapAppStartedToState();
     } else if (event is LoggedIn) {
-      yield* _mapLoggedInState();
+      yield* _mapLoggedInToState();
     } else if (event is LoggedOut) {
-      yield* _mapLoggedOutState();
+      yield* _mapLoggedOutToState();
     }
   }
 
-  Stream<AuthenticationState> _mapAppStartedState() async* {
+  Stream<AuthenticationState> _mapAppStartedToState() async* {
     try {
       final isSignedIn = await _userRepository.isSignedIn();
       if (isSignedIn) {
@@ -41,11 +42,11 @@ class AuthenticationBloc
     }
   }
 
-  _mapLoggedInState() async* {
+  Stream<AuthenticationState> _mapLoggedInToState() async* {
     yield Authenticated(await _userRepository.getUser());
   }
 
-  _mapLoggedOutState() async* {
+  Stream<AuthenticationState> _mapLoggedOutToState() async* {
     yield Unauthenticated();
     _userRepository.signOut();
   }
