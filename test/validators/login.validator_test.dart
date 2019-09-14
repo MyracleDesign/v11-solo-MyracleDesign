@@ -21,6 +21,10 @@ void main() {
       test("should return true if password is valid", () {
         expect(LoginValidator.isValidPassword("TestPassword456"), true);
       });
+
+      test("should return true if password is valid", () {
+        expect(() => LoginValidator.isValidPassword(null), throwsArgumentError);
+      });
     });
   });
 }

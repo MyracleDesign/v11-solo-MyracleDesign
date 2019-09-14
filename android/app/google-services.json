@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "578885688462",
+    "firebase_url": "https://travel-todo-17fe8.firebaseio.com",
+    "project_id": "travel-todo-17fe8",
+    "storage_bucket": "travel-todo-17fe8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578885688462:android:7052d857d6ca58713e7ddf",
+        "android_client_info": {
+          "package_name": "com.myracle.flutter_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "578885688462-f1lr2vbv0f3qac9be9b8r51ik03rkunv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.myracle.flutter_app",
+            "certificate_hash": "4f4a6273fadebe4d49c6c729ebd963e1252510c3"
+          }
+        },
+        {
+          "client_id": "578885688462-lnnglmdkv2ai0obhmuke1ms731lkuicb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkLpI4BGwpUuM4os7IoCwgcPMSRzovq30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "578885688462-lnnglmdkv2ai0obhmuke1ms731lkuicb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "578885688462-jad7mcjf5ej2ahcu01a4tkq0mc8egc0f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.myracle.traveltodo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
