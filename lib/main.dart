@@ -1,9 +1,10 @@
 import "package:bloc/bloc.dart";
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/home.page.dart';
+import 'package:flutter_app/pages/home_page.dart';
 import 'package:flutter_app/pages/login/login.page.dart';
-import 'package:flutter_app/pages/splash.page.dart';
+import 'package:flutter_app/pages/splash_page.dart';
 import 'package:flutter_app/repositories/user-repository.dart';
+import 'package:flutter_app/theme-travel-todo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/authentication/bloc.dart';
@@ -31,9 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: travelTodoTheme,
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state is Uninitialized) {

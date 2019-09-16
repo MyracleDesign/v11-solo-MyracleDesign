@@ -10,12 +10,13 @@ class LoginState {
 
   bool get isFormValid => isEmailValid && isPasswordValid;
 
-  LoginState(
-      {@required this.isEmailValid,
-      @required this.isPasswordValid,
-      @required this.isSubmitting,
-      @required this.isSuccess,
-      @required this.isFailure});
+  LoginState({
+    @required this.isEmailValid,
+    @required this.isPasswordValid,
+    @required this.isSubmitting,
+    @required this.isSuccess,
+    @required this.isFailure,
+  });
 
   factory LoginState.empty() {
     return LoginState(
