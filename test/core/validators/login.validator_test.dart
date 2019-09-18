@@ -1,4 +1,4 @@
-import 'package:flutter_app/validators/login.validator.dart';
+import 'package:flutter_app/core/validators/login.validator.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
