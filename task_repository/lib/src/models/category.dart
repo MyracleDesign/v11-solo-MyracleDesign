@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter_app/core/models/task_model.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
+
+import 'task.dart';
 
 @immutable
 class Category extends Equatable {

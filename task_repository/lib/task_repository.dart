@@ -1,7 +1,5 @@
 library task_repository;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/firebase_tasks_repository.dart';
+export 'src/models/models.dart';
+export 'src/tasks_repository.dart';
