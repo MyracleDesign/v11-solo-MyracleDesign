@@ -9,8 +9,6 @@ class TaskEntity {
 
   TaskEntity(this.complete, this.id, this.description, this.name, this.dueDate);
 
-
-
   Map<String, Object> toJson() {
     return {
       "complete": complete,

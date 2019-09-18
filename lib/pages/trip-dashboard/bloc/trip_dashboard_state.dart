@@ -14,15 +14,6 @@ class TripDashboardState {
     @required this.trips,
   });
 
-  factory TripDashboardState.empty() {
-    return TripDashboardState(
-      isLoading: false,
-      isFailure: false,
-      isLoaded: false,
-      trips: [],
-    );
-  }
-
   factory TripDashboardState.loading() {
     return TripDashboardState(
       isLoading: true,

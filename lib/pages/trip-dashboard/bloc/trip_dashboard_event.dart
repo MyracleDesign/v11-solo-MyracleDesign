@@ -7,5 +7,6 @@ abstract class TripDashboardEvent extends Equatable {
 }
 
 class TripDashboardLoading extends TripDashboardEvent {
-
+  @override
+  String toString() => "TripDashboardLoading";
 }
