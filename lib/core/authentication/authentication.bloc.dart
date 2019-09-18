@@ -1,8 +1,8 @@
-import 'dart:async';
-import 'package:bloc/bloc.dart';
-import 'package:flutter_app/core/authentication/bloc.dart';
-import 'package:flutter_app/repositories/user-repository.dart';
 import 'package:meta/meta.dart';
+
+import 'bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:user_repository/user_repository.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
@@ -30,10 +30,11 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
     try {
-      final isSignedIn = await _userRepository.isSignedIn();
+      final isSignedIn = await _userRepository.isAuthenticated();
       if (isSignedIn) {
-        final name = await _userRepository.getUser();
-        yield Authenticated(name);
+        final displayName =
+            (await _userRepository.getCurrentUser()).displayName;
+        yield Authenticated(displayName);
       } else {
         yield Unauthenticated();
       }
@@ -43,7 +44,7 @@ class AuthenticationBloc
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
-    yield Authenticated(await _userRepository.getUser());
+    yield Authenticated((await _userRepository.getCurrentUser()).displayName);
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {

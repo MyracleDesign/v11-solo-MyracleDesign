@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_app/core/validators/login.validator.dart';
-import 'package:flutter_app/repositories/user-repository.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:user_repository/user_repository.dart';
 
 import 'bloc.dart';
 

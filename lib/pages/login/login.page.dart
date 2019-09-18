@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/login/widgets/login-form.widget.dart';
-import 'package:flutter_app/repositories/user-repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:user_repository/user_repository.dart';
 
 import 'bloc/login_bloc.dart';
 

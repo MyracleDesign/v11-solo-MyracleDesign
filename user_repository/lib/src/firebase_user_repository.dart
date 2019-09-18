@@ -1,15 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class UserRepository {
+import 'models/models.dart';
+import 'user_repository.dart';
+
+class FirebaseUserRepository implements UserRepository {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
 
-  UserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignIn})
+  FirebaseUserRepository({FirebaseAuth firebaseAuth, GoogleSignIn googleSignIn})
       : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn();
 
-  Future<FirebaseUser> signInWithGoogle() async {
+  Future<User> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -18,7 +21,7 @@ class UserRepository {
       accessToken: googleAuth.accessToken,
     );
     await _firebaseAuth.signInWithCredential(authCredential);
-    return _firebaseAuth.currentUser();
+    return User.fromEntity(await _firebaseAuth.currentUser());
   }
 
   Future<void> signInWithCredentials(String email, String password) {
@@ -39,12 +42,18 @@ class UserRepository {
     return Future.wait([_firebaseAuth.signOut(), _googleSignIn.signOut()]);
   }
 
-  Future<bool> isSignedIn() async {
-    final currentUser = _firebaseAuth.currentUser();
-    return currentUser != null;
+  Future<User> getCurrentUser() async {
+    return User.fromEntity(await _firebaseAuth.currentUser());
   }
 
-  Future<String> getUser() async {
-    return (await _firebaseAuth.currentUser()).email;
+  @override
+  Future<String> getUserId() async {
+    return (await _firebaseAuth.currentUser()).uid;
+  }
+
+  @override
+  Future<bool> isAuthenticated() async {
+    final currentUser = _firebaseAuth.currentUser();
+    return currentUser != null;
   }
 }

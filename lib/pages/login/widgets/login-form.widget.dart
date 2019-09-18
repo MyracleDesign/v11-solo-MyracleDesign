@@ -5,8 +5,8 @@ import 'package:flutter_app/pages/login/bloc/login_state.dart';
 import 'package:flutter_app/pages/login/widgets/create-account-button.widget.dart';
 import 'package:flutter_app/pages/login/widgets/google-login-button.widget.dart';
 import 'package:flutter_app/pages/login/widgets/login-button.widget.dart';
-import 'package:flutter_app/repositories/user-repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:user_repository/user_repository.dart';
 
 class LoginForm extends StatefulWidget {
   final UserRepository _userRepository;
