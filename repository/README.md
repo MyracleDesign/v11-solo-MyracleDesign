@@ -1,6 +1,6 @@
 # task_repository
 
-A new Flutter package project.
+Repository for the flutter travel manager app.
 
 ## Getting Started
 

@@ -5,7 +5,7 @@ import 'package:flutter_app/pages/login/login.page.dart';
 import 'package:flutter_app/pages/splash_page.dart';
 import 'package:flutter_app/theme-travel-todo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:user_repository/user_repository.dart';
+import 'package:repository/user_repository.dart';
 
 import 'core/authentication/bloc.dart';
 import 'core/delegates/simpleBloc.delegate.dart';
