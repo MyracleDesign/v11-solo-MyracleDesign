@@ -12,6 +12,17 @@ class TripDashboardLoading extends TripDashboardEvent {
   String toString() => "TripDashboardLoading";
 }
 
+class AddTrip extends TripDashboardEvent {
+  final Trip newTrip;
+
+  AddTrip(this.newTrip) : super([newTrip]);
+
+  @override
+  String toString() {
+    return "New Trip { newTrip: $newTrip }";
+  }
+}
+
 class UpdateTrip extends TripDashboardEvent {
   final Trip updatedTrip;
 

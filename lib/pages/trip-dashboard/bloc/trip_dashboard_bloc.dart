@@ -19,9 +19,10 @@ class TripDashboardBloc extends Bloc<TripDashboardEvent, TripDashboardState> {
   ) async* {
     if (event is TripDashboardLoading) {
       yield* _mapLoadTripsToState();
-    }
-    if (event is TripsUpdated) {
+    } else if (event is TripsUpdated) {
       yield* _mapTripsUpdatedToState(event);
+    } else if (event is AddTrip) {
+      yield* _mapAddTripToState(event);
     }
   }
 
@@ -41,5 +42,9 @@ class TripDashboardBloc extends Bloc<TripDashboardEvent, TripDashboardState> {
   Stream<TripDashboardState> _mapTripsUpdatedToState(
       TripsUpdated event) async* {
     yield TripDashboardState.loaded(event.updatedTrips);
+  }
+
+  Stream<TripDashboardState> _mapAddTripToState(AddTrip event) async* {
+    tripRepository.addTrip(event.newTrip);
   }
 }

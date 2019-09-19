@@ -34,7 +34,7 @@ class TripDashboardPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          print("Lululu");
+          Navigator.pushNamed(context, '/addTrip');
         },
       ),
     );
