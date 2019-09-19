@@ -41,5 +41,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>The photo library needs access to add a picture to the trip that the user wants to create. Additionally we want that our users have the possibility to add a profile picture.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Not used yet</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Not used yet</string>
 </dict>
 </plist>

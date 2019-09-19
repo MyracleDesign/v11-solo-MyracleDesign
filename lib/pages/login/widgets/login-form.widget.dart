@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/core/authentication/bloc.dart';
+import 'package:flutter_app/core/bloc/authentication/bloc.dart';
 import 'package:flutter_app/pages/login/bloc/bloc.dart';
 import 'package:flutter_app/pages/login/bloc/login_state.dart';
 import 'package:flutter_app/pages/login/widgets/create-account-button.widget.dart';

@@ -44,12 +44,14 @@ class TripEntity {
   }
 
   static TripEntity fromSnapshot(DocumentSnapshot snap) {
+
+
     return TripEntity(
         snap.documentID,
         snap.data["title"],
         snap.data["destination"],
-        snap.data["startDate"],
-        snap.data["endDate"],
+        (snap.data["startDate"] as Timestamp)?.toDate(),
+        (snap.data["endDate"] as Timestamp)?.toDate(),
         snap.data["photoUrl"]);
   }
 

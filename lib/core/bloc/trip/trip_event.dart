@@ -3,16 +3,16 @@ import 'package:meta/meta.dart';
 import 'package:repository/trip/models/models.dart';
 
 @immutable
-abstract class TripDashboardEvent extends Equatable {
-  TripDashboardEvent([List<dynamic> props = const []]) : super(props);
+abstract class TripEvent extends Equatable {
+  TripEvent([List<dynamic> props = const []]) : super(props);
 }
 
-class TripDashboardLoading extends TripDashboardEvent {
+class TripDashboardLoading extends TripEvent {
   @override
   String toString() => "TripDashboardLoading";
 }
 
-class AddTrip extends TripDashboardEvent {
+class AddTrip extends TripEvent {
   final Trip newTrip;
 
   AddTrip(this.newTrip) : super([newTrip]);
@@ -23,7 +23,7 @@ class AddTrip extends TripDashboardEvent {
   }
 }
 
-class UpdateTrip extends TripDashboardEvent {
+class UpdateTrip extends TripEvent {
   final Trip updatedTrip;
 
   UpdateTrip(this.updatedTrip) : super([updatedTrip]);
@@ -32,7 +32,7 @@ class UpdateTrip extends TripDashboardEvent {
   String toString() => 'UpdateTrip { updatedTrip: $updatedTrip }';
 }
 
-class TripsUpdated extends TripDashboardEvent {
+class TripsUpdated extends TripEvent {
   final List<Trip> updatedTrips;
 
   TripsUpdated(this.updatedTrips) : super([updatedTrips]);

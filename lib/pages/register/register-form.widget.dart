@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/core/authentication/bloc.dart';
+import 'package:flutter_app/core/bloc/authentication/bloc.dart';
 import 'package:flutter_app/pages/register/bloc/bloc.dart';
 import 'package:flutter_app/pages/register/register-button.widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -2,21 +2,21 @@ import 'package:meta/meta.dart';
 import 'package:repository/trip/models/models.dart';
 
 @immutable
-class TripDashboardState {
+class TripState {
   final bool isLoading;
   final bool isFailure;
   final bool isLoaded;
   final List<Trip> trips;
 
-  TripDashboardState({
+  TripState({
     @required this.isLoading,
     @required this.isFailure,
     @required this.isLoaded,
     @required this.trips,
   });
 
-  factory TripDashboardState.loading() {
-    return TripDashboardState(
+  factory TripState.loading() {
+    return TripState(
       isLoading: true,
       isFailure: false,
       isLoaded: false,
@@ -24,8 +24,8 @@ class TripDashboardState {
     );
   }
 
-  factory TripDashboardState.loaded(List<Trip> trips) {
-    return TripDashboardState(
+  factory TripState.loaded(List<Trip> trips) {
+    return TripState(
       isLoading: false,
       isFailure: false,
       isLoaded: true,
@@ -33,8 +33,8 @@ class TripDashboardState {
     );
   }
 
-  factory TripDashboardState.failure() {
-    return TripDashboardState(
+  factory TripState.failure() {
+    return TripState(
       isLoading: false,
       isFailure: true,
       isLoaded: false,

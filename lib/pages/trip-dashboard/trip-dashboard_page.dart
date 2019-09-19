@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/core/authentication/authentication.bloc.dart';
-import 'package:flutter_app/core/authentication/authentication.event.dart';
+import 'package:flutter_app/core/bloc/authentication/bloc.dart';
+import 'package:flutter_app/core/bloc/trip/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:repository/trip/models/trip.dart';
-
-import 'bloc/trip_dashboard_bloc.dart';
-import 'bloc/trip_dashboard_state.dart';
 
 class TripDashboardPage extends StatelessWidget {
   @override
@@ -19,7 +16,7 @@ class TripDashboardPage extends StatelessWidget {
                   .dispatch(LoggedOut());
             })
       ]),
-      body: BlocBuilder<TripDashboardBloc, TripDashboardState>(
+      body: BlocBuilder<TripBloc, TripState>(
         builder: (context, state) {
           if (state.isLoading) {
             return CircularProgressIndicator();
