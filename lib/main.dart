@@ -1,14 +1,16 @@
 import "package:bloc/bloc.dart";
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/home_page.dart';
 import 'package:flutter_app/pages/login/login.page.dart';
 import 'package:flutter_app/pages/splash_page.dart';
+import 'package:flutter_app/pages/trip-dashboard/bloc/bloc.dart';
 import 'package:flutter_app/theme-travel-todo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:repository/trip/firebase_trip_repository.dart';
 import 'package:repository/user_repository.dart';
 
 import 'core/authentication/bloc.dart';
 import 'core/delegates/simpleBloc.delegate.dart';
+import 'pages/trip-dashboard/trip-dashboard_page.dart';
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -33,24 +35,38 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: travelTodoTheme,
-      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
-          if (state is Uninitialized) {
-            return SplashPage();
-          }
-          if (state is Unauthenticated) {
-            return LoginPage(
-              userRepository: _userRepository,
-            );
-          }
-          if (state is Authenticated) {
-            return HomePage(
-              name: state.displayName,
-            );
-          }
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthenticationBloc>(
+            builder: (context) {
+              return AuthenticationBloc(
+                userRepository: FirebaseUserRepository(),
+              )..dispatch(AppStarted());
+            },
+          ),
+          BlocProvider<TripDashboardBloc>(builder: (context) {
+            return TripDashboardBloc(
+              tripRepository: FirebaseTripRepository(),
+            )..dispatch(TripDashboardLoading());
+          })
+        ],
+        child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+          builder: (context, state) {
+            if (state is Uninitialized) {
+              return SplashPage();
+            }
+            if (state is Unauthenticated) {
+              return LoginPage(
+                userRepository: _userRepository,
+              );
+            }
+            if (state is Authenticated) {
+              return TripDashboardPage();
+            }
 
-          return Placeholder();
-        },
+            return Placeholder();
+          },
+        ),
       ),
     );
   }

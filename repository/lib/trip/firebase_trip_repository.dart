@@ -17,7 +17,7 @@ class FirebaseTripRepository implements TripRepository {
   }
 
   @override
-  Stream<List<Trip>> trips() {
+  Stream<List<Trip>> loadTrips() {
     return tripCollection.snapshots().map((snapshot) {
       return snapshot.documents
           .map((doc) => Trip.fromEntity(TripEntity.fromSnapshot(doc)))

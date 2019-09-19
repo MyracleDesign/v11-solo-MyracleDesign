@@ -1,11 +1,14 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
-import 'bloc.dart';
+import 'package:repository/trip_repository.dart';
+import "package:bloc/bloc.dart";
+import 'trip_dashboard_event.dart';
+import 'trip_dashboard_state.dart';
 
 class TripDashboardBloc extends Bloc<TripDashboardEvent, TripDashboardState> {
-  final TripsRepository tripsRepository;
+  final TripRepository tripRepository;
+  StreamSubscription _tripSubscription;
 
-  TripDashboardBloc({this.tripsRepository});
+  TripDashboardBloc({this.tripRepository});
 
   @override
   TripDashboardState get initialState => TripDashboardState.loading();
@@ -15,20 +18,28 @@ class TripDashboardBloc extends Bloc<TripDashboardEvent, TripDashboardState> {
     TripDashboardEvent event,
   ) async* {
     if (event is TripDashboardLoading) {
-      yield* _mapLoadTodosToState();
+      yield* _mapLoadTripsToState();
+    }
+    if (event is TripsUpdated) {
+      yield* _mapTripsUpdatedToState(event);
     }
   }
 
-  Stream<TripDashboardState> _mapLoadTodosToState() async* {
+  Stream<TripDashboardState> _mapLoadTripsToState() async* {
     try {
-      final trips = await this.tripsRepository.loadTrips();
-      yield TripDashboardState.loaded(trips);
+      _tripSubscription?.cancel();
+      _tripSubscription = tripRepository.loadTrips().listen(
+        (trips) {
+          dispatch(TripsUpdated(trips));
+        },
+      );
     } catch (e) {
       yield TripDashboardState.failure();
     }
   }
-}
 
-class TripsRepository {
-  loadTrips() {}
+  Stream<TripDashboardState> _mapTripsUpdatedToState(
+      TripsUpdated event) async* {
+    yield TripDashboardState.loaded(event.updatedTrips);
+  }
 }

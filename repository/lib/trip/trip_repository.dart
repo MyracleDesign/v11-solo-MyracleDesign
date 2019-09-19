@@ -7,5 +7,5 @@ abstract class TripRepository {
 
   Future<void> updateTrip(Trip trip);
 
-  Stream<List<Trip>> trips();
+  Stream<List<Trip>> loadTrips();
 }
