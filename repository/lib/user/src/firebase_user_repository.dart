@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -21,7 +22,11 @@ class FirebaseUserRepository implements UserRepository {
       accessToken: googleAuth.accessToken,
     );
     await _firebaseAuth.signInWithCredential(authCredential);
-    return User.fromEntity(await _firebaseAuth.currentUser());
+
+    var user = await _firebaseAuth.currentUser();
+
+    saveUserToFirestore(user);
+    return User.fromEntity(user);
   }
 
   Future<void> signInWithCredentials(String email, String password) {
@@ -32,10 +37,14 @@ class FirebaseUserRepository implements UserRepository {
   }
 
   Future<void> signUp({String email, String password}) async {
-    return await _firebaseAuth.createUserWithEmailAndPassword(
+    return _firebaseAuth
+        .createUserWithEmailAndPassword(
       email: email,
       password: password,
-    );
+    )
+        .then((authResult) {
+      saveUserToFirestore(authResult.user);
+    });
   }
 
   Future<void> signOut() async {
@@ -55,5 +64,11 @@ class FirebaseUserRepository implements UserRepository {
   Future<bool> isAuthenticated() async {
     final currentUser = _firebaseAuth.currentUser();
     return currentUser != null;
+  }
+
+  void saveUserToFirestore(FirebaseUser user) {
+    final userCollection = Firestore.instance.collection("users");
+
+    userCollection.document(user.uid).setData({"email": user.email});
   }
 }

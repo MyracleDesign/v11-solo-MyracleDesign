@@ -6,6 +6,7 @@ import 'package:repository/trip/trip_repository.dart';
 class FirebaseTripRepository implements TripRepository {
   final tripCollection = Firestore.instance.collection("trips");
 
+
   @override
   Future<void> addTrip(Trip trip) {
     return tripCollection.add(trip.toEntity().toDocument());
