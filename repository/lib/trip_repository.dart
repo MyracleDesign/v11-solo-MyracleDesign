@@ -1,0 +1,1 @@
+export 'trip/trip_repository.dart';

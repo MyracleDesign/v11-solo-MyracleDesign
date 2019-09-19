@@ -1,111 +1,195 @@
+import "package:bloc/bloc.dart";
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/login/login.page.dart';
+import 'package:flutter_app/pages/splash_page.dart';
+import 'package:flutter_app/pages/trip-dashboard/bloc/bloc.dart';
+import 'package:flutter_app/theme-travel-todo.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:repository/trip/firebase_trip_repository.dart';
+import 'package:repository/trip/models/models.dart';
+import 'package:repository/user_repository.dart';
 
-void main() => runApp(MyApp());
+import 'core/authentication/bloc.dart';
+import 'core/delegates/simpleBloc.delegate.dart';
+import 'pages/trip-dashboard/trip-dashboard_page.dart';
+
+void main() {
+  BlocSupervisor.delegate = SimpleBlocDelegate();
+  final UserRepository userRepository = FirebaseUserRepository();
+  runApp(BlocProvider(
+      builder: (context) => AuthenticationBloc(userRepository: userRepository)
+        ..dispatch(AppStarted()),
+      child: MyApp(userRepository: userRepository)));
+}
 
 class MyApp extends StatelessWidget {
+  final UserRepository _userRepository;
+
+  MyApp({Key key, @required UserRepository userRepository})
+      : assert(userRepository != null),
+        _userRepository = userRepository,
+        super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+          builder: (context) {
+            return AuthenticationBloc(
+              userRepository: FirebaseUserRepository(),
+            )..dispatch(AppStarted());
+          },
+        ),
+        BlocProvider<TripDashboardBloc>(builder: (context) {
+          return TripDashboardBloc(
+            tripRepository: FirebaseTripRepository(),
+          )..dispatch(TripDashboardLoading());
+        })
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: travelTodoTheme,
+        routes: {
+          '/': (context) {
+            return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, state) {
+                if (state is Uninitialized) {
+                  return SplashPage();
+                }
+                if (state is Unauthenticated) {
+                  return LoginPage(
+                    userRepository: _userRepository,
+                  );
+                }
+                if (state is Authenticated) {
+                  return TripDashboardPage();
+                }
+
+                return Placeholder();
+              },
+            );
+          },
+          "/addTrip": (context) {
+            final tripsBloc = BlocProvider.of<TripDashboardBloc>(context);
+            return AddTripScreen(
+                onSave: (
+                  id,
+                  title,
+                  destination,
+                  startDate,
+                  endDate,
+                  photoUrl,
+                ) {
+                  tripsBloc.dispatch(AddTrip(Trip(
+                    id,
+                    title,
+                    destination,
+                    startDate,
+                    endDate,
+                    photoUrl,
+                  )));
+                },
+                isEditing: false);
+          },
+        },
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class AddTripScreen extends StatefulWidget {
+  final Function onSave;
+  final bool isEditing;
+  final Trip trip;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  AddTripScreen({
+    Key key,
+    @required this.onSave,
+    @required this.isEditing,
+    this.trip,
+  }) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<StatefulWidget> createState() => _AddTripScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _AddTripScreenState extends State<AddTripScreen> {
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  String title;
+  String description;
+
+  var _startDateController = TextEditingController();
+
+  var _endDateController = TextEditingController();
+
+  bool get isEditing => widget.isEditing;
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(isEditing ? "Edit Trip" : "Create Trip"),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: <Widget>[
+              TextFormField(
+                  initialValue: isEditing ? widget.trip.title : "",
+                  autofocus: !isEditing,
+                  decoration: InputDecoration(
+                    hintText: "Trip Title",
+                  )),
+              TextFormField(
+                  initialValue: isEditing ? widget.trip.destination : "",
+                  decoration: InputDecoration(hintText: "Destination")),
+              TextFormField(
+                decoration: InputDecoration(hintText: "Start Date"),
+                onTap: () async {
+                  final DateTime picked = await showDatePicker(
+                    context: context,
+                    initialDate:
+                    isEditing ? widget.trip.startDate : DateTime.now(),
+                    lastDate: DateTime(2101),
+                    firstDate: DateTime(2015, 8),
+                  );
+                  if (picked != null) {
+                    var formattedDateTime =
+                    new DateFormat.yMMMd().format(picked);
+                    _startDateController.text = formattedDateTime.toString();
+                  }
+                },
+                controller: _startDateController,
+              ),
+              TextFormField(
+                decoration: InputDecoration(hintText: "End Date"),
+                onTap: () async {
+                  final DateTime picked = await showDatePicker(
+                    context: context,
+                    initialDate:
+                    isEditing ? widget.trip.startDate : DateTime.now(),
+                    lastDate: DateTime(2101),
+                    firstDate: DateTime(2015, 8),
+                  );
+                  if (picked != null) {
+                    var formattedDateTime =
+                    new DateFormat.yMMMd().format(picked);
+                    _endDateController.text = formattedDateTime.toString();
+                  }
+                },
+                controller: _endDateController,
+              )
+
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
