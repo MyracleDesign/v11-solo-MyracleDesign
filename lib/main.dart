@@ -75,11 +75,26 @@ class MyApp extends StatelessWidget {
           "/addTrip": (context) {
             final tripsBloc = BlocProvider.of<TripBloc>(context);
             return AddTripPage(
-                onSave: (id, title, destination, startDate, endDate, photoUrl) {
+                onSave: (
+                    {@required id,
+                    title,
+                    destination,
+                    startDate,
+                    endDate,
+                    photoUrl}) {
                   tripsBloc.dispatch(
-                    AddTrip(Trip(
-                        id, title, destination, startDate, endDate, photoUrl)),
+                    AddTrip(
+                      Trip(
+                        id: id,
+                        title: title,
+                        destination: destination,
+                        startDate: startDate,
+                        endDate: endDate,
+                        photoUrl: photoUrl,
+                      ),
+                    ),
                   );
+                  Navigator.pop(context);
                 },
                 isEditing: false);
           },

@@ -9,16 +9,16 @@ class Trip extends Equatable {
   final String destination;
   final DateTime startDate;
   final DateTime endDate;
-  final Uri photoUrl;
+  final String photoUrl;
 
-  Trip(
+  Trip({
+    @required this.title,
     this.id,
-    this.title,
     this.destination,
     this.startDate,
     this.endDate,
     this.photoUrl,
-  );
+  });
 
   @override
   int get hashCode {
@@ -54,12 +54,12 @@ class Trip extends Equatable {
 
   static Trip fromEntity(TripEntity entity) {
     return Trip(
-      entity.id,
-      entity.title,
-      entity.destination,
-      entity.startDate,
-      entity.endDate,
-      entity.photoUrl,
+      id: entity.id,
+      title: entity.title,
+      destination: entity.destination,
+      startDate: entity.startDate,
+      endDate: entity.endDate,
+      photoUrl: entity.photoUrl,
     );
   }
 }

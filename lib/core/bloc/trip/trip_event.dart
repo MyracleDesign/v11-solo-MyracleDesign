@@ -40,3 +40,12 @@ class TripsUpdated extends TripEvent {
   @override
   String toString() => 'TripsUpdated { trips: $updatedTrips }';
 }
+
+class DeleteTrip extends TripEvent {
+  final Trip deletedTrip;
+
+  DeleteTrip(this.deletedTrip) : super([deletedTrip]);
+
+  @override
+  String toString() => "DeletedTrip { deletedTrip: $deletedTrip}";
+}

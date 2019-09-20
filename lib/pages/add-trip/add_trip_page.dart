@@ -1,14 +1,22 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widgets/date_time_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:repository/trip/models/models.dart';
 
 class AddTripPage extends StatefulWidget {
-  final Function onSave;
   final bool isEditing;
   final Trip trip;
+
+  final Function({
+    @required String title,
+    String destination,
+    DateTime startDate,
+    DateTime endDate,
+    String photoUrl,
+  }) onSave;
 
   AddTripPage({
     Key key,
@@ -24,24 +32,44 @@ class AddTripPage extends StatefulWidget {
 class _AddTripPageState extends State<AddTripPage> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String title;
-  String description;
-
   File _image;
 
-  var _startDateController = TextEditingController();
-
-  var _endDateController = TextEditingController();
+  DateTime _startDate;
+  DateTime _endDate;
 
   bool get isEditing => widget.isEditing;
 
+  var _titleController = TextEditingController();
+  var _destinationController = TextEditingController();
+  var _startDateController = TextEditingController();
+  var _endDateController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    if (isEditing) {
+      _titleController.text = widget.trip.title;
+      _destinationController.text = widget.trip.destination;
+      _startDateController.text =
+          DateFormat.yMMMd().format(widget.trip.startDate);
+      _endDateController.text = DateFormat.yMMMd().format(widget.trip.endDate);
+    }
+
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            widget.onSave(
+              title: _titleController.text,
+              destination: _destinationController.text.isNotEmpty
+                  ? _destinationController.text
+                  : null,
+              startDate: _startDate,
+              endDate: _endDate,
+            );
+          }
+        },
       ),
       appBar: AppBar(
         title: Text(isEditing ? "Edit Trip" : "Create Trip"),
@@ -53,70 +81,62 @@ class _AddTripPageState extends State<AddTripPage> {
           child: ListView(
             children: <Widget>[
               TextFormField(
-                  initialValue: isEditing ? widget.trip.title : "",
-                  autofocus: !isEditing,
-                  decoration: InputDecoration(
-                    hintText: "Trip Title",
-                  )),
-              TextFormField(
-                  initialValue: isEditing ? widget.trip.destination : "",
-                  decoration: InputDecoration(hintText: "Destination")),
-              TextFormField(
-                decoration: InputDecoration(hintText: "Start Date"),
-                onTap: () async {
-                  final DateTime picked = await showDatePicker(
-                    context: context,
-                    initialDate:
-                        isEditing ? widget.trip.startDate : DateTime.now(),
-                    lastDate: DateTime(2101),
-                    firstDate: DateTime(2015, 8),
-                  );
-                  if (picked != null) {
-                    var formattedDateTime =
-                        new DateFormat.yMMMd().format(picked);
-                    _startDateController.text = formattedDateTime.toString();
+                autofocus: !isEditing,
+                decoration: InputDecoration(
+                  hintText: "Trip Title",
+                ),
+                controller: _titleController,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return "Please enter a Title";
                   }
+                  return null;
                 },
-                controller: _startDateController,
               ),
               TextFormField(
-                decoration: InputDecoration(hintText: "End Date"),
-                onTap: () async {
-                  final DateTime picked = await showDatePicker(
-                    context: context,
-                    initialDate:
-                        isEditing ? widget.trip.startDate : DateTime.now(),
-                    lastDate: DateTime(2101),
-                    firstDate: DateTime(2015, 8),
-                  );
-                  if (picked != null) {
-                    var formattedDateTime =
-                        new DateFormat.yMMMd().format(picked);
-                    _endDateController.text = formattedDateTime.toString();
-                  }
+                decoration: InputDecoration(hintText: "Destination"),
+                controller: _destinationController,
+              ),
+              DateTimePicker(
+                hintText: "Start Date",
+                initValue: isEditing ? widget.trip.startDate : DateTime.now(),
+                dateController: _startDateController,
+                onSelectValue: (DateTime selectedDate) {
+                  setState(() {
+                    _startDate = selectedDate;
+                  });
                 },
-                controller: _endDateController,
+              ),
+              DateTimePicker(
+                hintText: "End Date",
+                initValue: isEditing ? widget.trip.endDate : DateTime.now(),
+                dateController: _endDateController,
+                onSelectValue: (DateTime selectedDate) {
+                  setState(() {
+                    _endDate = selectedDate;
+                  });
+                },
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Card(
-                    child: InkWell(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            _image == null
-                                ? Container(
-                                    height: 200, child: Icon(Icons.image))
-                                : Image.file(_image),
-                          ],
-                        ),
-                        onTap: () async {
-                          var image = await ImagePicker.pickImage(
-                              source: ImageSource.gallery);
-                          setState(() {
-                            _image = image;
-                          });
-                        })),
+                  child: InkWell(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          _image == null
+                              ? Container(height: 200, child: Icon(Icons.image))
+                              : Image.file(_image),
+                        ],
+                      ),
+                      onTap: () async {
+                        var image = await ImagePicker.pickImage(
+                            source: ImageSource.gallery);
+                        setState(() {
+                          _image = image;
+                        });
+                      }),
+                ),
               )
             ],
           ),

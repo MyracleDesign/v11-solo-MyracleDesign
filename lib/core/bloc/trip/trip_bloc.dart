@@ -23,6 +23,8 @@ class TripBloc extends Bloc<TripEvent, TripState> {
       yield* _mapTripsUpdatedToState(event);
     } else if (event is AddTrip) {
       yield* _mapAddTripToState(event);
+    } else if (event is DeleteTrip) {
+      yield* _mapDeleteTripToState(event);
     }
   }
 
@@ -39,12 +41,17 @@ class TripBloc extends Bloc<TripEvent, TripState> {
     }
   }
 
-  Stream<TripState> _mapTripsUpdatedToState(
-      TripsUpdated event) async* {
+  Stream<TripState> _mapTripsUpdatedToState(TripsUpdated event) async* {
     yield TripState.loaded(event.updatedTrips);
   }
 
   Stream<TripState> _mapAddTripToState(AddTrip event) async* {
     tripRepository.addTrip(event.newTrip);
+    yield TripState.loading();
+  }
+
+  Stream<TripState> _mapDeleteTripToState(DeleteTrip event) async* {
+    tripRepository.deleteTrip(event.deletedTrip);
+    yield TripState.loading();
   }
 }

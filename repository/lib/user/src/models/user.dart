@@ -34,9 +34,6 @@ class User extends Equatable {
           uid == other.uid &&
           phoneNumber == other.phoneNumber;
 
-  FirebaseUser toEntity(){
-
-  }
 
   static User fromEntity(FirebaseUser entity) {
     return User(

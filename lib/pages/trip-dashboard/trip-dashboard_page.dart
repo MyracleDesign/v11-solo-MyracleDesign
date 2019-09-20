@@ -21,9 +21,31 @@ class TripDashboardPage extends StatelessWidget {
           if (state.isLoading) {
             return CircularProgressIndicator();
           }
-          if (state.isLoaded) {
+          if (state.isLoaded && state.trips.isNotEmpty) {
             return ListView(
                 children: state.trips.map((trip) => TripWidget(trip)).toList());
+          }
+          if (state.isLoaded && state.trips.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      "You currently do not have any trips",
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                  ),
+                  RaisedButton(
+                    child: Text("Create a Trip!"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/addTrip");
+                    },
+                  )
+                ],
+              ),
+            );
           }
           return Placeholder();
         },
@@ -47,8 +69,14 @@ class TripWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        trailing: IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () {
+            BlocProvider.of<TripBloc>(context).dispatch(DeleteTrip(trip));
+          },
+        ),
         title: Text(trip.title),
-        subtitle: Text(trip.destination),
+        subtitle: Text(trip.destination != null ? trip.destination : ""),
       ),
     );
   }

@@ -6,7 +6,7 @@ class TripEntity {
   final String destination;
   final DateTime startDate;
   final DateTime endDate;
-  final Uri photoUrl;
+  final String photoUrl;
 
   TripEntity(
     this.id,
@@ -40,12 +40,10 @@ class TripEntity {
         json["destination"] as String,
         json["startDate"] as DateTime,
         json["endDate"] as DateTime,
-        json["photoUrl"] as Uri);
+        json["photoUrl"]);
   }
 
   static TripEntity fromSnapshot(DocumentSnapshot snap) {
-
-
     return TripEntity(
         snap.documentID,
         snap.data["title"],
